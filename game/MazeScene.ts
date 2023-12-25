@@ -288,8 +288,8 @@ export async function MazeScene({ app, seed }: MazeSceneOptions) {
 
     // カメラ追尾の処理、デタラメ
 
-    const w = (maze.width + 2) * brickSize;
-    const h = (maze.height + 2) * brickSize;
+    const w = maze.width * brickSize;
+    const h = maze.height * brickSize;
     const x = player.sprite.x + player.sprite.width / 2;
     const y = player.sprite.y + player.sprite.height / 2;
 
