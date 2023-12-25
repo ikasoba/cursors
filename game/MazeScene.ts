@@ -110,7 +110,7 @@ export function createMaze(
   mazeWrapper.addChild(walls);
 
   const ws = new WebSocket(
-    new URL(`../stream/${seed}`, location.href).toString().replace(
+    new URL(`/stream/${seed}`, location.href).toString().replace(
       /^http/,
       "ws",
     ),
