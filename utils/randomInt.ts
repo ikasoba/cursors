@@ -1,0 +1,1 @@
+export const randomInt = (min: number, max: number, rng = Math.random) => Math.floor(min + rng() * (max - min + 1));
