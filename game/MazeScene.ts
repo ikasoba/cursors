@@ -163,6 +163,8 @@ export function createMaze(
     player,
     stage: mazeWrapper,
     maze,
+    walls,
+    hints,
     socket: ws,
     dispose() {
       mazeWrapper.parent.removeChild(mazeWrapper);
@@ -181,8 +183,31 @@ export async function MazeScene({ app, seed }: MazeSceneOptions) {
 
   const view = app.view as HTMLCanvasElement;
 
+  app.stage.sortableChildren = true;
+
+  const scoreText = new PIXI.Text(
+    `score: ${history.state.score ?? 0} cleared: ${history.state.room ?? 0}`,
+    {
+      fontSize: 24,
+      fill: 0xffffff,
+      align: "left",
+    },
+  );
+
+  const redrawScoreText = () => {
+    scoreText.text = `score: ${history.state.score ?? 0} cleared: ${
+      history.state.room ?? 0
+    }`;
+  };
+
+  scoreText.zIndex = 1;
+  scoreText.x = 8;
+  scoreText.y = 8;
+
+  app.stage.addChild(scoreText);
+
   let rng = seedrandom(seed);
-  let { stage, maze, bgColor, dispose: disposeMaze, socket } = createMaze(
+  let { stage, maze, bgColor, dispose: disposeMaze, socket, hints } = createMaze(
     seed,
     rng,
     brickSize,
@@ -235,27 +260,70 @@ export async function MazeScene({ app, seed }: MazeSceneOptions) {
       player.sprite.y = nextY;
     }
 
+    if (maze.field[fieldY][fieldX] == BlockType.Hint) {
+      history.replaceState(
+        {
+          score: (history.state.score ?? 0) + 1,
+          room: history.state.room ?? 0,
+        },
+        "",
+      );
+
+      redrawScoreText();
+
+      maze.field[fieldY][fieldX] = BlockType.None;
+
+      const rect = new PIXI.Rectangle(
+        fieldX * brickSize,
+        fieldY * brickSize,
+        brickSize,
+        brickSize,
+      );
+
+      hints.beginFill(0xdddddd);
+      hints.drawShape(rect);
+      hints.endFill();
+    }
+
     // カメラ追尾の処理、デタラメ
 
     const w = (maze.width + 2) * brickSize;
     const h = (maze.height + 2) * brickSize;
-    const x = player.sprite.x - 0.5 * brickSize + player.sprite.width / 2;
-    const y = player.sprite.y - 0.5 * brickSize + player.sprite.height / 2;
+    const x = player.sprite.x + player.sprite.width / 2;
+    const y = player.sprite.y + player.sprite.height / 2;
 
-    stage.x = -(x - x / w * app.screen.width);
-    stage.y = -(y - y / h * app.screen.height);
+    if (w <= app.screen.width) {
+      stage.x = app.screen.width / 2 + w / 2;
+    } else {
+      stage.x = (x / w) * (app.screen.width - w);
+    }
+
+    if (h <= app.screen.height) {
+      stage.y = app.screen.height / 2 + h / 2;
+    } else {
+      stage.y = (y / h) * (app.screen.height - h);
+    }
 
     // ゴール時の処理
 
     if (fieldX == maze.goalX && fieldY == maze.goalY) {
       const seed = genSeed(rng);
-      history.pushState(null, "", `/m/${seed}`);
+      history.pushState(
+        {
+          score: (history.state.score ?? 0) + 10,
+          room: (history.state.room ?? 0) + 1,
+        },
+        "",
+        `/m/${seed}`,
+      );
+
+      redrawScoreText();
 
       rng = seedrandom(seed);
 
       disposeMaze();
 
-      ({ stage, maze, bgColor, dispose: disposeMaze, socket } = createMaze(
+      ({ stage, maze, bgColor, dispose: disposeMaze, socket, hints } = createMaze(
         seed,
         rng,
         brickSize,
