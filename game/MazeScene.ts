@@ -294,13 +294,13 @@ export async function MazeScene({ app, seed }: MazeSceneOptions) {
     const y = player.sprite.y + player.sprite.height / 2;
 
     if (w <= app.screen.width) {
-      stage.x = app.screen.width / 2 + w / 2;
+      stage.x = app.screen.width / 2 - w / 2;
     } else {
       stage.x = (x / w) * (app.screen.width - w);
     }
 
     if (h <= app.screen.height) {
-      stage.y = app.screen.height / 2 + h / 2;
+      stage.y = app.screen.height / 2 - h / 2;
     } else {
       stage.y = (y / h) * (app.screen.height - h);
     }
