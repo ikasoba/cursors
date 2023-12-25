@@ -207,13 +207,14 @@ export async function MazeScene({ app, seed }: MazeSceneOptions) {
   app.stage.addChild(scoreText);
 
   let rng = seedrandom(seed);
-  let { stage, maze, bgColor, dispose: disposeMaze, socket, hints } = createMaze(
-    seed,
-    rng,
-    brickSize,
-    player,
-    app,
-  );
+  let { stage, maze, bgColor, dispose: disposeMaze, socket, hints } =
+    createMaze(
+      seed,
+      rng,
+      brickSize,
+      player,
+      app,
+    );
 
   app.renderer.background.color = bgColor;
 
@@ -323,13 +324,14 @@ export async function MazeScene({ app, seed }: MazeSceneOptions) {
 
       disposeMaze();
 
-      ({ stage, maze, bgColor, dispose: disposeMaze, socket, hints } = createMaze(
-        seed,
-        rng,
-        brickSize,
-        player,
-        app,
-      ));
+      ({ stage, maze, bgColor, dispose: disposeMaze, socket, hints } =
+        createMaze(
+          seed,
+          rng,
+          brickSize,
+          player,
+          app,
+        ));
 
       app.renderer.background.color = bgColor;
 
