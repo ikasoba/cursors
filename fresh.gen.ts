@@ -5,7 +5,7 @@
 import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
-import * as $index from "./routes/index.ts";
+import * as $index from "./routes/index.tsx";
 import * as $m_seed_ from "./routes/m/[seed].tsx";
 import * as $stream_maze_seed_ from "./routes/stream/[maze_seed].ts";
 import * as $GameMain from "./islands/GameMain.tsx";
@@ -16,7 +16,7 @@ const manifest = {
     "./routes/_404.tsx": $_404,
     "./routes/_app.tsx": $_app,
     "./routes/greet/[name].tsx": $greet_name_,
-    "./routes/index.ts": $index,
+    "./routes/index.tsx": $index,
     "./routes/m/[seed].tsx": $m_seed_,
     "./routes/stream/[maze_seed].ts": $stream_maze_seed_,
   },

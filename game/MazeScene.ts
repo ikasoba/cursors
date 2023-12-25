@@ -6,6 +6,7 @@ import { Cursor } from "./Cursor.ts";
 import { randomInt } from "../utils/randomInt.ts";
 import { genSeed } from "../utils/genSeed.ts";
 import { MazeStreamMessage } from "../routes/stream/[maze_seed].ts";
+import { TitleText } from "./TitleText.ts";
 
 export interface MazeSceneOptions {
   app: PIXI.Application;
@@ -216,6 +217,8 @@ export async function MazeScene({ app, seed }: MazeSceneOptions) {
       app,
     );
 
+  let collectedHints = 0;
+
   app.renderer.background.color = bgColor;
 
   let prevPos = {
@@ -284,6 +287,27 @@ export async function MazeScene({ app, seed }: MazeSceneOptions) {
       hints.beginFill(0xdddddd);
       hints.drawShape(rect);
       hints.endFill();
+
+      collectedHints++;
+
+      if (collectedHints == maze.totalHints) {
+        const text = new PIXI.Text("(>ω<)", {
+          fontSize: 36,
+          fill: 0xffffff,
+          align: "center",
+        });
+
+        text.zIndex = 1;
+
+        text.anchor.set(0.5);
+
+        text.x = app.screen.width / 2;
+        text.y = app.screen.height / 2;
+
+        TitleText(text, app.ticker);
+
+        app.stage.addChild(text);
+      }
     }
 
     // カメラ追尾の処理、デタラメ
@@ -332,6 +356,8 @@ export async function MazeScene({ app, seed }: MazeSceneOptions) {
           player,
           app,
         ));
+
+      collectedHints = 0;
 
       app.renderer.background.color = bgColor;
 

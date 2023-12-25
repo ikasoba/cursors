@@ -21,6 +21,7 @@ export interface Maze {
   startY: number;
   goalX: number;
   goalY: number;
+  totalHints: number;
 }
 
 const randomInt = (r: Rng, max: number) => Math.floor(r() * max);
@@ -100,6 +101,8 @@ export function generate(random: Rng, width: number, height: number): Maze {
     }
   }
 
+  let totalHints = 0;
+
   for (let i = 0; i < 8; i++) {
     const corners = Math.random() < 0.65
       ? roads.goal.length ? roads.goal : roads.normal
@@ -109,7 +112,11 @@ export function generate(random: Rng, width: number, height: number): Maze {
     const { x, y } =
       corners.splice(randomInt(Math.random, corners.length), 1)[0];
 
+    if (x == goalX && y == goalY) continue;
+
     field[y][x] = BlockType.Hint;
+
+    totalHints++;
   }
 
   return {
@@ -120,6 +127,7 @@ export function generate(random: Rng, width: number, height: number): Maze {
     startY,
     goalX,
     goalY,
+    totalHints
   };
 }
 
